@@ -1,0 +1,7 @@
+deployment/
+load-testing/
+outdated_learning/
+.git
+.gitignore
+*.log
+*.md

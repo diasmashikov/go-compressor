@@ -1,0 +1,11 @@
+services:
+  k6:
+    image: grafana/k6:latest
+    container_name: k6-external-tester
+    volumes:
+      - ./scenarios:/scripts/scenarios # Mount external test scripts
+      - ./../test-images:/scripts/test-images # Mount test-images folder
+      - ./results:/scripts/results # Mount results directory
+    environment:
+      - API_HOST=34.54.41.238 # Target Load Balancer URL
+    command: run /scripts/scenarios/${TEST_SCRIPT:-load-testing.js} # Default test script

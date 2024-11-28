@@ -1,0 +1,30 @@
+# Terraform
+terraform.tfstate
+terraform.tfstate.*
+*.tfvars
+key.json
+.terraform/
+.terraform.lock.hcl
+terraform_storage/
+
+# Unrelated
+outdated_learning/
+.env
+
+# Load-testing results
+/load-testing/**/results/
+/load-testing/test-images/output.png
+
+# Binaries and build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.log
+*.out
+*.a
+
+# Go specific files
+/bin/
+/pkg/
