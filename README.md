@@ -2,10 +2,13 @@
 
 A powerful and scalable solution for **image compression**, supporting both **lossless compression** with the standard library (`pkg/image`) and **lossy compression** using `pngquant`. The project is designed with future enhancements in mind, including:
 
+
 - **Batch Processing**: Enable efficient compression of large-scale image datasets, ranging from gigabytes to terabytes.
 - **Open API Integration**: Provide a public API endpoint for seamless image compression task automation.
 - **Extended File Format Support**: Expand compression capabilities to include JPEG and other popular image formats.
 - **Microservice Architecture**: Build a modular architecture to support additional services, such as high-performance video compression.
+
+You can access it by following this link: [gofilecompress.com](https://gofilecompress.com)
 
 
 ## Table of Contents
