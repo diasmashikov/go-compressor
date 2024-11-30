@@ -9,6 +9,7 @@ import (
 	"image/png"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"time"
 )
 
@@ -29,7 +30,6 @@ func (s *StdlibStrategy) Compress(ctx context.Context, input *models.Compression
     var buffer bytes.Buffer
     encoder := png.Encoder{CompressionLevel: png.BestCompression}
     
-    // Convert bytes to image for encoding
     img, _, err := image.Decode(bytes.NewReader(input.ImageBytes))
     if err != nil {
         return nil, fmt.Errorf("error decoding image: %w", err)
@@ -40,6 +40,8 @@ func (s *StdlibStrategy) Compress(ctx context.Context, input *models.Compression
     }
     
     compressedBytes := buffer.Bytes()
+
+    fmt.Println(time.Since(startTime).Milliseconds())
     
     return &models.CompressionOutput{
         CompressedBytes: compressedBytes,
@@ -62,39 +64,42 @@ func (s *PngQuantStrategy) GetName() string {
 
 func (s *PngQuantStrategy) Compress(ctx context.Context, input *models.CompressionInput) (*models.CompressionOutput, error) {
     startTime := time.Now()
-
+    
     inputFile, err := os.CreateTemp("", "input-*.png")
     if err != nil {
         return nil, fmt.Errorf("failed to create temp input file: %w", err)
     }
     defer os.Remove(inputFile.Name())
-
+    
     if _, err := inputFile.Write(input.ImageBytes); err != nil {
         return nil, fmt.Errorf("failed to write input file: %w", err)
     }
-
-    outputFile, err := os.CreateTemp("", "output-*.png")
-    if err != nil {
-        return nil, fmt.Errorf("failed to create temp output file: %w", err)
-    }
-    fmt.Println(outputFile.Name())
-    defer os.Remove(outputFile.Name()) 
-
-    cmd := exec.CommandContext(ctx, "pngquant", "--quality=60-80", "--output", outputFile.Name(), inputFile.Name())
+    
+    outputPath := filepath.Join(os.TempDir(), fmt.Sprintf("output-%d.png", time.Now().UnixNano()))
+    defer os.Remove(outputPath)
+    
+    cmd := exec.CommandContext(ctx, "pngquant", 
+        "--quality=60-80", 
+        "--force",          
+        "--output", outputPath, 
+        inputFile.Name())
+    
     var stderr bytes.Buffer
     cmd.Stderr = &stderr
-
+    
     if err := cmd.Run(); err != nil {
         return nil, fmt.Errorf("pngquant failed: %s, error: %w", stderr.String(), err)
     }
-
-    compressedBytes, err := os.ReadFile(outputFile.Name())
+    
+    compressedBytes, err := os.ReadFile(outputPath)
     if err != nil {
         return nil, fmt.Errorf("failed to read compressed file: %w", err)
     }
 
+    fmt.Println(time.Since(startTime).Milliseconds())
+    
     return &models.CompressionOutput{
-        CompressedBytes: compressedBytes,
+        CompressedBytes:  compressedBytes,
         OriginalSize:    int64(len(input.ImageBytes)),
         CompressedSize:  int64(len(compressedBytes)),
         CompressionTime: time.Since(startTime).Milliseconds(),

@@ -17,3 +17,11 @@ variable "zone" {
 variable "docker_image" {
   description = "The docker image to pull & deploy our app"
 }
+
+variable "domain_name" {
+  description = "Domain name of our backend server"
+}
+
+variable "alert_email" {
+  description = "Email to send alerts to"
+}

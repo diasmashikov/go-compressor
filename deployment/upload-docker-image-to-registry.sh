@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Load variables from .env
-if [ -f .env ]; then
-  source .env
+if [ -f ../.env ]; then
+  source ../.env
 else
-  echo ".env file not found. Please create one with required variables."
+  echo "../.env file not found. Please create one with required variables."
   exit 1
 fi
 
