@@ -28,3 +28,5 @@ outdated_learning/
 # Go specific files
 /bin/
 /pkg/
+
+.DS_Store

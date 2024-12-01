@@ -83,3 +83,4 @@ resource "google_compute_managed_ssl_certificate" "default" {
     prevent_destroy = true
   }
 }
+
